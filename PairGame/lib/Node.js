@@ -9,9 +9,12 @@ export default class Node {
         this._scaleX = 1;
         this._scaleY = 1;
         this.children = [];
-        this._opacity=1;
-        this._zIndex=10;
-        this._isClicked=0;
+        this._opacity = 1;
+        this._zIndex = 10;
+        this._isClicked = 0;
+        this._backGroundImage = ''
+        this._alignitem = ''
+        this._border=''
     }
     _initElement() {
         this.ele = document.createElement('div');
@@ -54,12 +57,12 @@ export default class Node {
         this.ele.style.display = this._active ? "block" : "none";
     }
 
-    get zIndex(){
+    get zIndex() {
         return this._zIndex
     }
-    set zIndex(val){
-        this._zIndex=val
-        this.ele.style.zIndex=this._zIndex
+    set zIndex(val) {
+        this._zIndex = val
+        this.ele.style.zIndex = this._zIndex
     }
 
     get scaleX() {
@@ -70,26 +73,51 @@ export default class Node {
         this._scaleX = value;
         this.ele.style.transform = `scaleX(${this._scaleX})`
     }
+
     get scaleY() {
         return this._scaleX;
     }
-
     set scaleY(value) {
         this._scaleY = value;
         this.ele.style.transform = `scaleY(${this._scaleY})`
     }
-    get opacity(){
+
+    get opacity() {
         return this._opacity
     }
-    set opacity(val){
-        this._opacity=val;
-        this.ele.style.opacity=this._opacity
+    set opacity(val) {
+        this._opacity = val;
+        this.ele.style.opacity = this._opacity
     }
-    get isClicked(){
+    
+    get isClicked() {
         return this._isClicked
     }
-    set isClicked(val){
-        this._isClicked=val
+    set isClicked(val) {
+        this._isClicked = val
+    }
+    get background() {
+        return this._backGroundImage
+    }
+    set background(val) {
+        this._backGroundImage = val
+        this.ele.style.backgroundImage = `url(${this._backGroundImage})`
+    }
+    get alignItem() {
+        return this._alignitem
+    }
+    set alignItem(val) {
+        this._alignitem = val
+        this.ele.style.display='flex'
+        this.ele.style.alignItems = this._alignitem
+        this.ele.style.justifyContent = this._alignitem
+    }
+    get border(){
+        return this._border
+    }
+    set border(val){
+        this._border=val
+        this.ele.style.border=this._border
     }
     addChild(node) {
         this.ele.appendChild(node.ele)
@@ -98,5 +126,4 @@ export default class Node {
     on(evt, listener) {
         this.ele.addEventListener(evt, listener)
     }
-
 }
