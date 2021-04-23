@@ -52,8 +52,6 @@ export class Card extends Node {
         cover.background = './img/cover.jpg';
         cover.width = 150;
         cover.height =150;
-        cover.x = 100;
-        cover.y = 100;
         // cover.border='5px solid gray'
         cover.alignItem = 'center'
         this.addChild(cover);
@@ -68,8 +66,6 @@ export class Card extends Node {
         var img = new Sprite(src)
         img.width =150;
         img.height = 150;
-        img.x = 100;
-        img.y = 100;
         img.scaleX = 0;
         this.addChild(img);
     }

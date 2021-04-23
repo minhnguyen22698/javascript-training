@@ -79,7 +79,7 @@ export class Game extends Node {
                 // cardHolder[randCard].available--;
                 console.log('Shuffle card value' + index + ': ' + cardShuffer[index-1].value);
                 var card = new Card(cardShuffer[index-1].img, index, cardShuffer[index-1].value);
-                gsap.set(card, { x: (j + 1.5) * 150 + j * 20, y: (i + 0.5) * 160,opacity:1})
+                gsap.set(card, { x: (j + 1.5) * 150 + j * 20, y: (i + 0.5) * 160+100,opacity:1})
                 card.zIndex = 20 - index
                 card.ele.id = cardShuffer[index-1].value;
                 this.addChild(card);
