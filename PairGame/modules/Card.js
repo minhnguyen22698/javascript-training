@@ -4,9 +4,9 @@ import { Label } from '../lib/Label.js'
 import { cardFlipAnimate, cardZoomOutAnimate } from '../engine/Animate.js'
 var listClick = [];
 var parentNode = [];
-var score = 500;
+var score=10000
 var matched = 9;
-var ready=false;
+var ready = false;
 
 export class Card extends Node {
     constructor(src, index, value, padding) {
@@ -25,7 +25,7 @@ export class Card extends Node {
         this._initImage(src);
         this._initCover(index);
         setTimeout(() => {
-            ready=true
+            ready = true
         }, 7000);
     }
     get src() {
@@ -50,8 +50,8 @@ export class Card extends Node {
     _initCover(index) {
         var cover = new Node()
         cover.background = './img/cover.jpg';
-        cover.width = window.innerWidth / 8 - 20;
-        cover.height = window.innerWidth / 8 - 20;
+        cover.width = 150;
+        cover.height =150;
         cover.x = 100;
         cover.y = 100;
         // cover.border='5px solid gray'
@@ -64,24 +64,16 @@ export class Card extends Node {
         label.fontSize = 30
         cover.addChild(label)
     }
-    _initScore() {
-        var label = new Label('Score : ', 30, 'red')
-        label.setText = "Score: "
-        this.addChild(label)
-    }
     _initImage(src) {
         var img = new Sprite(src)
-        img.width = window.innerWidth / 8 - 20;
-        img.height = window.innerWidth / 8 - 20;
+        img.width =150;
+        img.height = 150;
         img.x = 100;
         img.y = 100;
         img.scaleX = 0;
         this.addChild(img);
     }
     setScore(val) {
-        if (matched == 10) {
-            alert('You win');
-        }
         var obj = {
             value: score
         }
@@ -91,15 +83,21 @@ export class Card extends Node {
                 value: 20,
             },
             onUpdate: () => {
-
                 document.getElementById('score').innerHTML = obj.value
-                score=obj.value
+                score = obj.value
+            },
+            onComplete:()=>{
+                if (matched == 10) {
+                    alert('You win');
+                }else if(val<=0){
+                     alert('You lose');
+                    ready=false
+                }
             }
         })
     }
-
     onClickCard(cover) {
-        if(ready==false) return
+        if (ready == false) return
         if (listClick.length >= 2 || cover.isClicked == 1) { return }
         cardFlipAnimate(cover, this.ele.children[0])
         parentNode.push(this);

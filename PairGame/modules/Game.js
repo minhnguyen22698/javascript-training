@@ -4,6 +4,9 @@ import { Card } from './Card.js'
 import { Label } from '../lib/Label.js'
 
 var cardHolder = []
+var cardShuffer=[]
+let index =0
+let timeline = gsap.timeline({ delay: (index) / 10 })
 
 for (let i = 0; i < 10; i++) {
     var arrTemp = []
@@ -17,36 +20,43 @@ export class Game extends Node {
     init() {
         this._initBackGround();
         this._initPlayBtn();
-        // this._initCard();
-        // this.initLabel();
-        // var btn =document.createElement('button')
-        // btn.innerHTML='Play again'
-        // btn.addEventListener('click',()=>{location.reload()})
-        // btn.style.zIndex='99'
-        // btn.style.position='relative'
-        // document.body.appendChild(btn)
+        this.shufferCard()
     }
     _initPlayBtn() {
         var btn = new Sprite('./img/play.png');
         btn.width = 300;
         btn.height = 200;
-        btn.x = window.innerWidth / 3 + 20
-        btn.y = window.innerHeight / 3 + 20
+        btn.x = 550
+        btn.y = 350
         btn.on('mousedown', this.onPlay.bind(this))
         this.addChild(btn)
-
     }
     onPlay(evt) {
-        evt.target.style.display = 'none'
         this._initCard();
         this.initLabel();
-        // this.active=false
+        // this._initPLayagain();
+    }
+    _initPLayagain() {
+        var playAgain = new Sprite('./img/again.png')
+        playAgain.width = 100;
+        playAgain.height = 100;
+        playAgain.y = 200
+        playAgain.x=20
+        playAgain.on('mousedown', this.onPlayAgain.bind(this))
+        this.addChild(playAgain)
+    
+    }
+    onPlayAgain() {
+        this.shufferCard()
+        this._initCard();
+        this.initLabel();
+        location.reload();
     }
     initLabel() {
         var label = new Label('Score: ', 50, 'red');
         label.y = 50
         this.addChild(label);
-        var score = new Label(500, 50);
+        var score = new Label(10000, 50);
         score.x = 150;
         score.y = 50
         score.ele.id = "score";
@@ -54,32 +64,48 @@ export class Game extends Node {
     }
     _initBackGround() {
         var bg = new Sprite('./img/trucxanh_bg.jpg')
-        bg.width = window.innerWidth;
-        bg.height = window.innerHeight;
-        this.addChild(bg)
+        bg.width = 1500;
+        bg.height = 1000;
+        this.addChild(bg);
     }
     _initCard() {
-        let index = 0;
-        let timeline = gsap.timeline({ delay: (index) / 3 })
+     this.ele.children[1].style.display='none'
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 5; j++) {
                 index++;
-                do {
-                    var randCard = Math.floor(Math.random() * cardHolder.length);
-                } while (cardHolder[randCard].available == 0 && cardHolder[randCard].value !== undefined);
-                cardHolder[randCard].available--;
-                console.log('Shuffle card value' + index + ': ' + cardHolder[randCard].value)
-                var card = new Card(cardHolder[randCard].img, index, cardHolder[randCard].value);
+                // do {
+                //     var randCard = Math.floor(Math.random() * cardHolder.length);
+                // } while (cardHolder[randCard].available == 0 && cardHolder[randCard].value !== undefined);
+                // cardHolder[randCard].available--;
+                console.log('Shuffle card value' + index + ': ' + cardShuffer[index-1].value);
+                var card = new Card(cardShuffer[index-1].img, index, cardShuffer[index-1].value);
+                gsap.set(card, { x: (j + 1.5) * 150 + j * 20, y: (i + 0.5) * 160,opacity:1})
                 card.zIndex = 20 - index
-                gsap.set(card, { x: Math.floor(((j + 1) * window.innerWidth / 8)), y: Math.floor(((i + 0.5) * window.innerWidth / 8)) })
-                card.ele.id = cardHolder[randCard].value;
+                card.ele.id = cardShuffer[index-1].value;
                 this.addChild(card);
                 timeline.from(card, {
-                    duration: 0.4, x: 5,
-                    y: Math.floor(((0.5) * window.innerWidth / 8)),
+                    duration: 0.4, x: 600,
+                    // y: Math.floor(((0.5) * window.innerWidth / 10)),
+                    y: 350,
+                    zIndex:99,
                     ease: 'back',
                 })
             }
         }
+    }
+    shufferCard(){
+        cardShuffer=[]
+        for(let i =0;i<10;i++){
+            cardHolder[i].available=2
+        }
+        for(let i=0;i<20;i++){
+            do {
+                var randCard = Math.floor(Math.random() * cardHolder.length);
+                console.log('lol')
+            } while (cardHolder[randCard].available == 0 && cardHolder[randCard].value !== undefined);
+            cardHolder[randCard].available--;
+            cardShuffer.push(cardHolder[randCard])
+        }
+        console.log(cardShuffer)
     }
 }
