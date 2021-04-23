@@ -4,8 +4,8 @@ import { Card } from './Card.js'
 import { Label } from '../lib/Label.js'
 
 var cardHolder = []
-var cardShuffer=[]
-let index =0
+var cardShuffer = []
+let index = 0
 let timeline = gsap.timeline({ delay: (index) / 10 })
 
 for (let i = 0; i < 10; i++) {
@@ -41,10 +41,10 @@ export class Game extends Node {
         playAgain.width = 100;
         playAgain.height = 100;
         playAgain.y = 200
-        playAgain.x=20
+        playAgain.x = 20
         playAgain.on('mousedown', this.onPlayAgain.bind(this))
         this.addChild(playAgain)
-    
+
     }
     onPlayAgain() {
         this.shufferCard()
@@ -69,36 +69,31 @@ export class Game extends Node {
         this.addChild(bg);
     }
     _initCard() {
-     this.ele.children[1].style.display='none'
+        this.ele.children[1].style.display = 'none'
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 5; j++) {
                 index++;
-                // do {
-                //     var randCard = Math.floor(Math.random() * cardHolder.length);
-                // } while (cardHolder[randCard].available == 0 && cardHolder[randCard].value !== undefined);
-                // cardHolder[randCard].available--;
-                console.log('Shuffle card value' + index + ': ' + cardShuffer[index-1].value);
-                var card = new Card(cardShuffer[index-1].img, index, cardShuffer[index-1].value);
-                gsap.set(card, { x: (j + 1.5) * 150 + j * 20, y: (i + 0.5) * 160+100,opacity:1})
-                card.zIndex = 20 - index
-                card.ele.id = cardShuffer[index-1].value;
+                console.log('Shuffle card value' + index + ': ' + cardShuffer[index - 1].value);
+                var card = new Card(cardShuffer[index - 1].img, index, cardShuffer[index - 1].value);
+                gsap.set(card, { x: (j + 2) * 150 + j *20, y: (i + 1) * 160,opacity:1})
+                card.zIndex = 20 - index;
+                card.ele.id = cardShuffer[index - 1].value;
                 this.addChild(card);
                 timeline.from(card, {
-                    duration: 0.4, x: 600,
-                    // y: Math.floor(((0.5) * window.innerWidth / 10)),
+                    duration: 0.3, x: 650,
                     y: 350,
-                    zIndex:99,
-                    ease: 'back',
+                    zIndex: 99 - index,
+                    ease: "back.out(1.7)",
                 })
             }
         }
     }
-    shufferCard(){
-        cardShuffer=[]
-        for(let i =0;i<10;i++){
-            cardHolder[i].available=2
+    shufferCard() {
+        cardShuffer = []
+        for (let i = 0; i < 10; i++) {
+            cardHolder[i].available = 2
         }
-        for(let i=0;i<20;i++){
+        for (let i = 0; i < 20; i++) {
             do {
                 var randCard = Math.floor(Math.random() * cardHolder.length);
                 console.log('lol')

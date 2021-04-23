@@ -4,10 +4,9 @@ import { Label } from '../lib/Label.js'
 import { cardFlipAnimate, cardZoomOutAnimate } from '../engine/Animate.js'
 var listClick = [];
 var parentNode = [];
-var score=10000
-var matched = 9;
+var score = 10000
+var matched = 0;
 var ready = false;
-
 export class Card extends Node {
     constructor(src, index, value, padding) {
         super()
@@ -51,20 +50,21 @@ export class Card extends Node {
         var cover = new Node()
         cover.background = './img/cover.jpg';
         cover.width = 150;
-        cover.height =150;
+        cover.height = 150;
         // cover.border='5px solid gray'
-        cover.alignItem = 'center'
         this.addChild(cover);
         cover.on("mousedown", () => this.onClickCard(cover));
         var label = new Label(this.index)
         label.text = index;
         label.fontColor = 'white'
         label.fontSize = 30
+        label.x = cover.width / 2 - 10;
+        label.y = cover.width / 2 - 10;
         cover.addChild(label)
     }
     _initImage(src) {
         var img = new Sprite(src)
-        img.width =150;
+        img.width = 150;
         img.height = 150;
         img.scaleX = 0;
         this.addChild(img);
@@ -82,12 +82,12 @@ export class Card extends Node {
                 document.getElementById('score').innerHTML = obj.value
                 score = obj.value
             },
-            onComplete:()=>{
+            onComplete: () => {
                 if (matched == 10) {
                     alert('You win');
-                }else if(val<=0){
-                     alert('You lose');
-                    ready=false
+                } else if (val <= 0) {
+                    alert('You lose');
+                    ready = false
                 }
             }
         })
@@ -100,6 +100,7 @@ export class Card extends Node {
         listClick.push(cover);
         cover.isClicked = 1;
         if (parentNode.length == 2) {
+            ready = false
             if (parentNode[0]._value === parentNode[1]._value) {
                 cardZoomOutAnimate(parentNode[0].ele.children[0]);
                 cardZoomOutAnimate(parentNode[1].ele.children[0]);
@@ -108,15 +109,21 @@ export class Card extends Node {
                     parentNode[1].active = false;
                     parentNode = []; listClick = [];
                     matched++;
+                    ready = true
+                    console.log('ready')
                     this.setScore(score + 1000)
                 }, 2500);
             } else {
                 setTimeout(() => {
                     cardFlipAnimate(parentNode[0].ele.children[0], listClick[0])
-                    cardFlipAnimate(parentNode[1].ele.children[0], listClick[1])
-                    parentNode = []; listClick = []
-                    this.setScore(score - 500)
-                }, 1500);
+                    cardFlipAnimate(parentNode[1].ele.children[0], listClick[1], () => {
+                        parentNode = []; listClick = []
+                        this.setScore(score - 500)
+                        console.log('ready')
+                        ready = true
+                    })
+                }, 1000)
+
             }
         }
     }

@@ -121,7 +121,7 @@ export default class Node {
     }
     addChild(node) {
         this.ele.appendChild(node.ele)
-        //  this.children.push(node)
+        //this.children.push(node)
     }
     on(evt, listener) {
         this.ele.addEventListener(evt, listener)
