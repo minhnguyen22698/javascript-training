@@ -7,7 +7,7 @@ export default class Node {
         this._height = 0;
         this._active = true;
         this._scaleX = 1;
-        this._scaleY = 1;
+        this._scale = 1;
         this.children = [];
         this._opacity = 1;
         this._zIndex = 10;
@@ -56,7 +56,6 @@ export default class Node {
         this._active = value;
         this.ele.style.display = this._active ? "block" : "none";
     }
-
     get zIndex() {
         return this._zIndex
     }
@@ -64,22 +63,20 @@ export default class Node {
         this._zIndex = val
         this.ele.style.zIndex = this._zIndex
     }
-
     get scaleX() {
         return this._scaleX;
     }
-
     set scaleX(value) {
         this._scaleX = value;
         this.ele.style.transform = `scaleX(${this._scaleX})`
     }
 
-    get scaleY() {
+    get scale() {
         return this._scaleX;
     }
-    set scaleY(value) {
-        this._scaleY = value;
-        this.ele.style.transform = `scaleY(${this._scaleY})`
+    set scale(value) {
+        this._scale = value;
+        this.ele.style.transform = `scale(${this.scale})`
     }
 
     get opacity() {
@@ -121,7 +118,7 @@ export default class Node {
     }
     addChild(node) {
         this.ele.appendChild(node.ele)
-        //  this.children.push(node)
+        this.children.push(node)
     }
     on(evt, listener) {
         this.ele.addEventListener(evt, listener)
