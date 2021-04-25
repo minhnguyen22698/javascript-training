@@ -18,11 +18,5 @@ export function cardZoomOutAnimate(item, callback) {
                 callback && callback()
             }
         })
-            // .to(item, {
-            //     zIndex: 1, onComplete: () => {
-            //         item.active = false
-            //         callback && callback()
-            //     }
-            // })
     }, 1000);
 }

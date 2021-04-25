@@ -21,10 +21,10 @@ export class Game extends Node {
         this._initBackGround();
         this._initPlayBtn();
         this.shufferCard();
-        this.ready=true
-        this.clickedCard=[]
-        this.score=1000
-        this._countMatch=0
+        this.ready = false
+        this.clickedCard = []
+        this.score = 1000
+        this.countMatch = 0
     }
 
     _initPlayBtn() {
@@ -40,6 +40,9 @@ export class Game extends Node {
         this._initCard();
         this.initLabel();
         this._initPLayagain();
+        setTimeout(() => {
+            this.ready = true
+        }, 6000);
     }
     _initPLayagain() {
         var playAgain = new Sprite('./img/again.png')
@@ -58,7 +61,7 @@ export class Game extends Node {
         var label = new Label('Score: ', 50, 'red');
         label.y = 50;
         this.addChild(label);
-        var score = new Label(10000, 50);
+        var score = new Label(this.score, 50);
         score.x = 150;
         score.y = 50;
         score.ele.id = "score";
@@ -72,7 +75,6 @@ export class Game extends Node {
     }
 
     _initCard() {
-        console.log(this._countMatch)
         let index = 0
         this.ele.children[1].style.display = 'none'
         for (let i = 0; i < 4; i++) {
@@ -107,7 +109,6 @@ export class Game extends Node {
         console.log(cardShuffer)
     }
     onClickCard(card, index, value) {
-        console.log(card.isClicked)
         if (this.ready == false || card.isClicked == 1 || this.clickedCard.length >= 2) return;
         let cardCover = card.children[1];
         let cardImg = card.children[0];
@@ -116,22 +117,23 @@ export class Game extends Node {
         this.clickedCard.push(card)
         if (this.clickedCard.length >= 2) {
             this.ready = false;
-            console.log(this.clickedCard[0].value + ":" + value);
-            console.log(this.clickedCard[0])
             if (this.clickedCard[0].value === value) {
                 cardZoomOutAnimate(card.children[0]);
                 cardZoomOutAnimate(this.clickedCard[0].children[0], () => {
                     this.clickedCard = [];
                     this.ready = true;
                     this.countMatch++
+                    
                     this.setScore(this.score + 1000)
                 })
+                this.playSound('correct.mp3')
 
             } else {
                 setTimeout(() => {
+                    this.playSound('ohno.mp3')
                     cardFlipAnimate(this.clickedCard[0].children[0], this.clickedCard[0].children[1]);
                     cardFlipAnimate(cardImg, cardCover,
-                        () => { 
+                        () => {
                             this.setScore(this.score - 500)
                             this.clickedCard[0].isClicked = 0
                             card.isClicked = 0;
@@ -166,11 +168,43 @@ export class Game extends Node {
         })
     }
     onWin() {
-        alert('You win')
         this.ready = false
+        var winQuotes = "You win with score : " + this.score;
+        this.removeCard(700, 400)
+        var winLabel = new Label(winQuotes, 50, 'red')
+        winLabel.x = 500,
+            winLabel.y = 350,
+            winLabel.width = winQuotes.length * 60
+        this.addChild(winLabel)
+        this.playSound('winSound.mp3')
     }
     onLose() {
-        alert('You lose')
         this.ready = false
+        this.removeCard(700, 340)
+        var loseLabel = new Label('You lose', 60, 'red')
+        loseLabel.x = 600;
+        loseLabel.y = 300;
+        loseLabel.opacity = 0
+        this.playSound('loseSound.mp3')
+        gsap.to(loseLabel, { duration: 2, opacity: 1 })
+        this.addChild(loseLabel)
+
+    }
+    removeCard(x, y) {
+        for (let i = 2; i < this.children.length; i++) {
+            if (i != 24) {
+                this.children[i].ele.remove()
+            }
+            else {
+                gsap.to(this.children[i], { duration: 2, x: x, y: y })
+
+            }
+
+        }
+    }
+    playSound(src) {
+        var loseSound = document.createElement('audio')
+        loseSound.src = `./sound/${src}`
+        loseSound.play()
     }
 }
