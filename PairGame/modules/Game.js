@@ -17,29 +17,14 @@ for (let i = 0; i < 10; i++) {
 }
 
 export class Game extends Node {
-    constructor() {
-        super();
-        this._ready = false
-        this._clickedCard = [];
-        this._score = 10000;
-        this._countMatch = 0
-    }
-    get clickedCard() {
-        return this._clickedCard;
-    }
-    set clickedCard(val) {
-        this._clickedCard = val
-    }
-    get ready() {
-        return this._ready
-    }
-    set ready(val) {
-        this._ready = val
-    }
     init() {
         this._initBackGround();
         this._initPlayBtn();
         this.shufferCard();
+        this.ready=true
+        this.clickedCard=[]
+        this.score=1000
+        this._countMatch=0
     }
 
     _initPlayBtn() {
@@ -68,8 +53,6 @@ export class Game extends Node {
     }
     onPlayAgain() {
         location.reload();
-        // this.shufferCard()
-        // timeline.restart()
     }
     initLabel() {
         var label = new Label('Score: ', 50, 'red');
@@ -91,32 +74,24 @@ export class Game extends Node {
     _initCard() {
         console.log(this._countMatch)
         let index = 0
-        var timeline = gsap.timeline({
-            onComplete: () => {
-                this.ready = true
-            }
-        })
         this.ele.children[1].style.display = 'none'
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 5; j++) {
                 index++;
                 console.log('Shuffle card value' + index + ': ' + cardShuffer[index - 1].value);
                 var card = new Card(cardShuffer[index - 1].img, index, cardShuffer[index - 1].value);
-                gsap.set(card, { x: (j + 2) * 150 + j * 20, y: (i + 1) * 160, opacity: 1 })
-                card.zIndex = 20 - index;
+                card.x = 650;
+                card.y = 350;
+                let timeline = gsap.timeline();
+                timeline.fromTo(card, { opacity: 0 }, { delay: (index) * 0.2, duration: 0.2, opacity: 1 })
                 card.on('mousedown', this.onClickCard.bind(this, card, index, cardShuffer[index - 1].value))
                 card.ele.id = cardShuffer[index - 1].value;
+                var moveCard = gsap.timeline({ delay: 4 })
+                moveCard.fromTo(card, { x: 650, y: 350 }, { delay: index / 20, x: (j + 2) * 150 + j * 20, y: (i + 1) * 160, opacity: 1, ease: "back.inOut(3)", })
                 this.addChild(card);
-                timeline.from(card, {
-                    duration: 0.3, x: 650,
-                    y: 350,
-                    zIndex: 99 - index,
-                    ease: "back.inOut(3)",
-                })
             }
         }
     }
-
     shufferCard() {
         cardShuffer = []
         for (let i = 0; i < 10; i++) {
@@ -137,7 +112,6 @@ export class Game extends Node {
         let cardCover = card.children[1];
         let cardImg = card.children[0];
         card.isClicked = 1
-        console.log('lol')
         cardFlipAnimate(cardCover, cardImg)
         this.clickedCard.push(card)
         if (this.clickedCard.length >= 2) {
@@ -145,18 +119,20 @@ export class Game extends Node {
             console.log(this.clickedCard[0].value + ":" + value);
             console.log(this.clickedCard[0])
             if (this.clickedCard[0].value === value) {
-                cardZoomOutAnimate(card);
-                cardZoomOutAnimate(this.clickedCard[0], () => {
-                    this.clickedCard = []
-                    this.ready = true
-                    this.setScore(this._score+1000)
+                cardZoomOutAnimate(card.children[0]);
+                cardZoomOutAnimate(this.clickedCard[0].children[0], () => {
+                    this.clickedCard = [];
+                    this.ready = true;
+                    this.countMatch++
+                    this.setScore(this.score + 1000)
                 })
+
             } else {
                 setTimeout(() => {
                     cardFlipAnimate(this.clickedCard[0].children[0], this.clickedCard[0].children[1]);
                     cardFlipAnimate(cardImg, cardCover,
-                        () => {
-                            this.setScore(this._score-500)
+                        () => { 
+                            this.setScore(this.score - 500)
                             this.clickedCard[0].isClicked = 0
                             card.isClicked = 0;
                             this.clickedCard = []
@@ -169,7 +145,7 @@ export class Game extends Node {
     }
     setScore(val) {
         var obj = {
-            value: this._score
+            value: this.score
         }
         TweenLite.to(obj, 0.4, {
             value: val,
@@ -177,11 +153,11 @@ export class Game extends Node {
                 value: 20,
             },
             onUpdate: () => {
-                this._score = obj.value
+                this.score = obj.value
                 document.getElementById('score').innerHTML = obj.value
             },
             onComplete: () => {
-                if (this._countMatch == 10) {
+                if (this.countMatch == 10) {
                     this.onWin()
                 } else if (val <= 0) {
                     this.onLose()

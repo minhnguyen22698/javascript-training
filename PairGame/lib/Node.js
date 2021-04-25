@@ -76,7 +76,7 @@ export default class Node {
     }
     set scale(value) {
         this._scale = value;
-        this.ele.style.transform = `scale(${this.scale})`
+        this.ele.style.transform = `scale(${this._scale})`;
     }
 
     get opacity() {
