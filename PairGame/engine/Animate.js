@@ -13,7 +13,7 @@ export function cardZoomOutAnimate(item, callback) {
     setTimeout(() => {
         var timeline = gsap.timeline()
         timeline.to(item, {
-            duration: 1, opacity: 0, scaleX:1,scale: 1.5, zIndex: 99, onComplete: () => {
+            duration: 1,zIndex: 20, opacity: 0, scaleX:1,scale: 1.5, onComplete: () => {
                 item.active = false
                 callback && callback()
             }

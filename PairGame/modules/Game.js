@@ -123,7 +123,7 @@ export class Game extends Node {
                 timeline.fromTo(card, { opacity: 0 }, { delay: (index) * 0.2, duration: 0.2, opacity: 1 })
                 card.on('mousedown', this.onClickCard.bind(this, card, index, cardShuffer[index - 1].value))
                 card.ele.id = cardShuffer[index - 1].value;
-                var moveCard = gsap.timeline({ delay: 3 })
+                var moveCard = gsap.timeline({ delay: 4.3 })
                 moveCard.fromTo(card, { x: 650, y: 350 }, { delay: index / 20, x: (j + 2) * 150 + j * 20, y: (i + 1) * 160, opacity: 1, ease: "back.out(3)", })
                 this.addChild(card);
             }
