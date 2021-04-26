@@ -23,7 +23,7 @@ export class Game extends Node {
         this.shufferCard();
         this.ready = false
         this.clickedCard = []
-        this.score = 1000
+        this.score = 10000
         this.countMatch = 0
     }
 
