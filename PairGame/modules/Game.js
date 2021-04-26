@@ -21,24 +21,58 @@ export class Game extends Node {
         this._initBackGround();
         this._initPlayBtn();
         this.shufferCard();
-        this.ready = false
-        this.clickedCard = []
-        this.score = 10000
-        this.countMatch = 0
+        this.ready = false;
+        this.clickedCard = [];
+        this.score = 10000;
+        this.countMatch = 0;
+    }
+    _initTutorial(move) {
+        if (move) {
+            var rule = [
+                'Chọn hai thẻ giống nhau để nhận được 1000 điểm',
+                'Chọn hai thẻ khác nhau sẽ bị trừ 500 điểm',
+                'Mở hết thẻ để trở thành bá chủ, hết điểm về ngủ'];
+            var ruleContainer = new Node()
+            ruleContainer.width = 1000
+            ruleContainer.x = 450
+            ruleContainer.y = 30
+            ruleContainer.ele.id = 'rule'
+            for (let i = 0; i < rule.length; i++) {
+                var ruleDetail = rule[i];
+                var renderRule = new Label(ruleDetail, 30)
+                renderRule.y = i * 30
+                ruleContainer.addChild(renderRule)
+            }
+            this.addChild(ruleContainer)
+        }
+        else {
+            document.getElementById('rule').remove()
+        }
+
+
+    }
+    _initHTPbtn() {
+        var tutorial = new Sprite('./img/tutorial.png')
+        tutorial.x = 300;
+        tutorial.y = 30;
+        tutorial.on('mouseenter', () => { this._initTutorial(true) })
+        tutorial.on('mouseleave', () => { this._initTutorial(false) })
+        this.addChild(tutorial)
     }
 
     _initPlayBtn() {
         var btn = new Sprite('./img/play.png');
         btn.width = 300;
         btn.height = 200;
-        btn.x = 550
-        btn.y = 350
-        btn.on('mousedown', this.onPlay.bind(this))
+        btn.x = 550;
+        btn.y = 350;
+        btn.on('mousedown', this.onPlay.bind(this));
         this.addChild(btn)
     }
     onPlay() {
         this._initCard();
         this.initLabel();
+        this._initHTPbtn();
         this._initPLayagain();
         setTimeout(() => {
             this.ready = true
@@ -84,12 +118,13 @@ export class Game extends Node {
                 var card = new Card(cardShuffer[index - 1].img, index, cardShuffer[index - 1].value);
                 card.x = 650;
                 card.y = 350;
+                card.opacity = 0;
                 let timeline = gsap.timeline();
                 timeline.fromTo(card, { opacity: 0 }, { delay: (index) * 0.2, duration: 0.2, opacity: 1 })
                 card.on('mousedown', this.onClickCard.bind(this, card, index, cardShuffer[index - 1].value))
                 card.ele.id = cardShuffer[index - 1].value;
-                var moveCard = gsap.timeline({ delay: 4 })
-                moveCard.fromTo(card, { x: 650, y: 350 }, { delay: index / 20, x: (j + 2) * 150 + j * 20, y: (i + 1) * 160, opacity: 1, ease: "back.inOut(3)", })
+                var moveCard = gsap.timeline({ delay: 3 })
+                moveCard.fromTo(card, { x: 650, y: 350 }, { delay: index / 20, x: (j + 2) * 150 + j * 20, y: (i + 1) * 160, opacity: 1, ease: "back.out(3)", })
                 this.addChild(card);
             }
         }
@@ -106,7 +141,6 @@ export class Game extends Node {
             cardHolder[randCard].available--;
             cardShuffer.push(cardHolder[randCard])
         }
-        console.log(cardShuffer)
     }
     onClickCard(card, index, value) {
         if (this.ready == false || card.isClicked == 1 || this.clickedCard.length >= 2) return;
@@ -123,11 +157,9 @@ export class Game extends Node {
                     this.clickedCard = [];
                     this.ready = true;
                     this.countMatch++
-                    
+                    this.playSound('correct.mp3')
                     this.setScore(this.score + 1000)
                 })
-                this.playSound('correct.mp3')
-
             } else {
                 setTimeout(() => {
                     this.playSound('ohno.mp3')
@@ -155,14 +187,14 @@ export class Game extends Node {
                 value: 20,
             },
             onUpdate: () => {
-                this.score = obj.value
-                document.getElementById('score').innerHTML = obj.value
+                this.score = obj.value;
+                document.getElementById('score').innerHTML = obj.value;
             },
             onComplete: () => {
                 if (this.countMatch == 10) {
-                    this.onWin()
+                    this.onWin();
                 } else if (val <= 0) {
-                    this.onLose()
+                    this.onLose();
                 }
             }
         })
@@ -188,7 +220,6 @@ export class Game extends Node {
         this.playSound('loseSound.mp3')
         gsap.to(loseLabel, { duration: 2, opacity: 1 })
         this.addChild(loseLabel)
-
     }
     removeCard(x, y) {
         for (let i = 2; i < this.children.length; i++) {
@@ -197,9 +228,7 @@ export class Game extends Node {
             }
             else {
                 gsap.to(this.children[i], { duration: 2, x: x, y: y })
-
             }
-
         }
     }
     playSound(src) {
