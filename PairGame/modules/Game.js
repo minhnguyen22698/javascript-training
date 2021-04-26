@@ -72,8 +72,8 @@ export class Game extends Node {
     onPlay() {
         this._initCard();
         this.initLabel();
-        this._initHTPbtn();
         this._initPLayagain();
+        this._initHTPbtn();
         setTimeout(() => {
             this.ready = true
         }, 6000);
